@@ -264,6 +264,14 @@ const DICT = {
 	'game.filledUp': { zh: '已加满 · {l} L', en: 'Filled up · {l} L' },
 	'game.upgradeBought': { zh: '{name}: {label}', en: '{name}: {label}' },
 
+	// ── Player 玩家提示 ──
+	'player.boardBoat': { zh: '上船', en: 'Board boat' },
+	'player.climbLadder': { zh: '爬梯子', en: 'Climb ladder' },
+	'player.takeHelm': { zh: '掌舵', en: 'Take the helm' },
+	'player.stepAshore': { zh: '登岸', en: 'Step ashore' },
+	'player.jumpOverboard': { zh: '下水', en: 'Jump overboard' },
+	'player.leaveHelm': { zh: '离开舵位   ·   V  切换视角', en: 'Leave helm   ·   V  camera' },
+
 	// ── App.js toast ──
 	'app.timeRunning': { zh: '时间运行中', en: 'Time running' },
 	'app.timePaused': { zh: '时间已暂停', en: 'Time paused' },
