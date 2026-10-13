@@ -13,6 +13,7 @@ import { DEPTH_FORMAT } from './engine/render/SceneRenderer.js';
 import { installDebugViews } from './core/DebugViews.js';
 
 import { Atmosphere, SUN_ILLUMINANCE } from './sky/Atmosphere.js';
+import { t } from './ui/i18n.js';
 import { Sky, sunDirectionFromTime } from './sky/Sky.js';
 import { Clouds } from './sky/Clouds.js';
 import { SkyProClouds } from './sky/SkyProClouds.js';
@@ -495,7 +496,7 @@ fn terrainWetness( xz: vec2f, h: f32 ) -> vec2f {
 
 			this.ui.s.advance = s.timeSpeed !== 0;
 			this.ui.ui.refresh();
-			this.ui.ui.toast( s.timeSpeed !== 0 ? 'Time running' : 'Time paused' );
+			this.ui.ui.toast( s.timeSpeed !== 0 ? t( 'app.timeRunning' ) : t( 'app.timePaused' ) );
 
 		}
 
@@ -611,14 +612,14 @@ fn terrainWetness( xz: vec2f, h: f32 ) -> vec2f {
 		if ( this.input.hit( 'KeyL' ) ) {
 
 			const on = this.localLights.toggleFlashlight();
-			if ( this.ui ) this.ui.ui.toast( on ? 'Flashlight on' : 'Flashlight off' );
+			if ( this.ui ) this.ui.ui.toast( on ? t( 'app.flashOn' ) : t( 'app.flashOff' ) );
 
 		}
 
 		if ( this.input.hit( 'KeyM' ) && this.audio ) {
 
 			this.audio.setMuted( ! this.audio.muted );
-			if ( this.ui ) this.ui.ui.toast( this.audio.muted ? 'Sound off' : 'Sound on' );
+			if ( this.ui ) this.ui.ui.toast( this.audio.muted ? t( 'app.soundOff' ) : t( 'app.soundOn' ) );
 
 		}
 		this.boatCtl.update( dt );

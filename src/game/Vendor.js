@@ -12,9 +12,10 @@ import { createPropMaterial, PAT } from './GameMaterials.js';
 //   vendor.group (add to the scene), vendor.inRange( p ), vendor.update( dt, lookAt )
 export class Vendor {
 
-	constructor( { name, kind = 'buyer', position, yaw = 0, radius = 2.6, greeting = '', idle = '', material = null, look = {}, character = null } ) {
+	constructor( { name, vendorKey = '', kind = 'buyer', position, yaw = 0, radius = 2.6, greeting = '', idle = '', material = null, look = {}, character = null } ) {
 
 		this.name = name;
+		this.vendorKey = vendorKey;
 		this.kind = kind; // 'buyer' (fish stand) | 'shop' (upgrades)
 		this.greeting = greeting;
 		this.idle = idle;
