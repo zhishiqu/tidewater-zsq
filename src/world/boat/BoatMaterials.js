@@ -23,6 +23,14 @@ fn boatHash21( p: vec2f ) -> f32 { return fract( sin( dot( p, vec2f( 127.1, 311.
 fn boatLstep( a: f32, b: f32, x: f32 ) -> f32 { return smoothstep( a, b, x ); }
 fn boatInvstep( a: f32, b: f32, x: f32 ) -> f32 { return 1.0 - smoothstep( a, b, x ); }
 
+// Five-pointed star with a tip at the given rotation. Coordinates use the flag's 30 x 20 grid.
+fn boatFlagStar( p: vec2f, center: vec2f, radius: f32, rotation: f32, aa: f32 ) -> f32 {
+	let q = p - center;
+	let angle = abs( fract( ( atan2( q.y, q.x ) - rotation ) * ( 5.0 / TWO_PI ) + 0.5 ) - 0.5 ) * ( TWO_PI / 5.0 );
+	let edge = 0.22451399 / ( 0.22451399 * cos( angle ) + 0.69098301 * sin( angle ) );
+	return boatInvstep( -aa, aa, length( q ) - radius * edge );
+}
+
 // Mikkelsen surface-gradient bump mapping from a procedural height in meters.
 // (TSL worked in view space with faceDirection; here P / N are world space and N already faces
 // the viewer on double-sided materials, so faceDirection is folded into N.)
@@ -343,17 +351,17 @@ export class BoatMaterials {
 	let strand = sin( ( u.x / 0.07 + u.y ) * ( TWO_PI * 3.0 ) );
 	let ropeShade = boatLstep( -0.7, 0.7, strand ) * 0.4 + 0.6;
 
-	let stripeIdx = floor( sat( u.y ) * 12.999 );
-	let red = 1.0 - ( stripeIdx - 2.0 * floor( stripeIdx / 2.0 ) );
-	let canton = step( u.x, 0.4 ) * step( ${ f( 6 / 13 ) }, u.y );
-	let sx = fract( u.x / 0.4 * 6.0 ) - 0.5;
-	let sy = fract( ( u.y - ${ f( 6 / 13 ) } ) / ${ f( 7 / 13 ) } * 5.0 ) - 0.5;
-	let star = boatInvstep( 0.16, 0.24, length( vec2f( sx, sy ) ) );
-	let stripes = mix( ${ col( 0xf4f1ea ) }, ${ col( 0xb3172a ) }, red );
-	let flag = mix( stripes, mix( ${ col( 0x1c2a5c ) }, ${ col( 0xf4f1ea ) }, star ), canton );
-
 	var c = mix( vColor, vColor * ropeShade, boatIsPattern( aux.z, 1.0 ) );
-	c = mix( c, flag, boatIsPattern( aux.z, 2.0 ) );
+	let flagGrid = u * vec2f( 30.0, 20.0 );
+	let flagAA = max( fwidth( flagGrid.x ), fwidth( flagGrid.y ) ) * 0.5;
+	if ( aux.z > 1.5 && aux.z < 2.5 ) {
+		var stars = boatFlagStar( flagGrid, vec2f( 5.0, 15.0 ), 3.0, PI * 0.5, flagAA );
+		stars = max( stars, boatFlagStar( flagGrid, vec2f( 10.0, 18.0 ), 1.0, atan2( -3.0, -5.0 ), flagAA ) );
+		stars = max( stars, boatFlagStar( flagGrid, vec2f( 12.0, 16.0 ), 1.0, atan2( -1.0, -7.0 ), flagAA ) );
+		stars = max( stars, boatFlagStar( flagGrid, vec2f( 12.0, 13.0 ), 1.0, atan2( 2.0, -7.0 ), flagAA ) );
+		stars = max( stars, boatFlagStar( flagGrid, vec2f( 10.0, 11.0 ), 1.0, atan2( 4.0, -5.0 ), flagAA ) );
+		c = mix( ${ col( 0xde2910 ) }, ${ col( 0xffde00 ) }, stars );
+	}
 	var rough = aux.x;
 	var bump = 0.0;
 	// interior props (patterns 4..9) only: ordinary fittings skip the noise
