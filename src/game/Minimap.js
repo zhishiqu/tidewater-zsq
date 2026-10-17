@@ -12,9 +12,10 @@ import { CHANDLERY } from './Chandlery.js';
 // Per frame it only writes a few CSS transforms. The bake runs in row chunks over the first frames.
 //   const map = new Minimap( hudEl, game );  map.update( dt );  map.highlight( [ 'joe', 'marta' ] )
 
-const N = 640; // baked canvas size (px)
-const EXT = 1280; // metres covered by the bake
-const X0 = - EXT / 2, Z0 = - 180 - EXT / 2; // world at canvas (0, 0): the island sits north of the bay
+const N = 1024; // baked canvas size (px)
+const SEA_RADIUS = 240; // widest visible radius when aboard or swimming
+const EXT = WORLD.terrainSize + SEA_RADIUS * 2; // whole terrain, plus room at every edge
+const X0 = - EXT / 2, Z0 = - EXT / 2; // world at canvas (0, 0)
 const PPM = N / EXT; // canvas px per metre
 const ROWS_PER_FRAME = 48;
 
@@ -334,7 +335,7 @@ export class Minimap {
 		const x = cam.position.x, z = cam.position.z;
 
 		// zoom: close on foot, wider at sea
-		const want = p.mode === 'boat' || p.mode === 'deck' || p.mode === 'swim' ? 240 : 110;
+		const want = p.mode === 'boat' || p.mode === 'deck' || p.mode === 'swim' ? SEA_RADIUS : 110;
 		this.radiusM += ( want - this.radiusM ) * ( 1 - Math.exp( - dt * 1.5 ) );
 		const kpm = R / this.radiusM; // css px per metre
 
